@@ -1,0 +1,9 @@
+---
+Language:        Cpp
+BasedOnStyle:  Google
+AccessModifierOffset: -2
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+...
+

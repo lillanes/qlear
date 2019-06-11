@@ -4,10 +4,17 @@ set(sources
 
 add_library(qlear ${sources})
 
-target_include_directories(qlear
-  PUBLIC "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(
+  qlear PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 install(
   TARGETS qlear
-  DESTINATION lib
-  )
+  EXPORT qlear-config
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+install(
+  EXPORT qlear-config
+  NAMESPACE qlear::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/qlear)

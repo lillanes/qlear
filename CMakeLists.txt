@@ -15,7 +15,10 @@ endif(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_CXX_FLAGS
   "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -std=c++17")
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include
+include(GNUInstallDirs)
+
+install(
+  DIRECTORY ${PROJECT_SOURCE_DIR}/include
   DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 add_subdirectory(src)

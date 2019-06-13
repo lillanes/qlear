@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <qlear/utils.hh>
+
 namespace qlear {
 
 void Environment::train(unsigned int steps, double learning_rate,
@@ -15,14 +17,17 @@ void Environment::train(unsigned int steps, double learning_rate,
 
     for (unsigned int step = 0; step < steps; ++step) {
         double max_q = qtable[{s0, 0}];
-        size_t best_action_index = 0;
+        std::vector<size_t> best_actions = {0};
         for (size_t index = 1; index < actions.size(); ++index) {
             double q = qtable[{s0, index}];
             if (q > max_q) {
                 max_q = q;
-                best_action_index = index;
+                best_actions = {index};
+            } else if (q == max_q) {
+                best_actions.push_back(index);
             }
         }
+        size_t best_action_index = uniform_choice(best_actions);
         Action best_action = actions[best_action_index];
         State s1 = best_action(s0);
         int r = reward(s0, best_action, s1);
@@ -58,15 +63,18 @@ int Environment::evaluate(unsigned int steps, bool verbose) const {
     for (unsigned int step = 0; step < steps; ++step) {
         auto it = qtable.find({s0, 0});
         double max_q = (it == qtable.end()) ? 0 : it->second;
-        size_t best_action_index = 0;
+        std::vector<size_t> best_actions = {0};
         for (size_t index = 1; index < actions.size(); ++index) {
             it = qtable.find({s0, index});
             double q = (it == qtable.end()) ? 0 : it->second;
             if (q > max_q) {
                 max_q = q;
-                best_action_index = index;
+                best_actions = {index};
+            } else if (q == max_q) {
+                best_actions.push_back(index);
             }
         }
+        size_t best_action_index = uniform_choice(best_actions);
         Action best_action = actions[best_action_index];
         State s1 = best_action(s0);
         int r = reward(s0, best_action, s1);

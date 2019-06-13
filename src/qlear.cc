@@ -30,7 +30,7 @@ void Environment::train(unsigned int steps, double learning_rate,
         size_t best_action_index = uniform_choice(best_actions);
         Action best_action = actions[best_action_index];
         State s1 = best_action(s0);
-        int r = reward(s0, best_action, s1);
+        double r = reward(s0, best_action, s1);
 
         if (verbose) {
             std::cout << "  Applied action " << best_action_index << "\n";
@@ -52,12 +52,14 @@ void Environment::train(unsigned int steps, double learning_rate,
     }
 }
 
-int Environment::evaluate(unsigned int steps, bool verbose) const {
+int Environment::evaluate(unsigned int steps, double discount,
+        bool verbose) const {
     if (verbose) {
         std::cout << "Begin evaluation!\n";
         std::cout << "  Starting at state " << init << ".\n";
     }
     int total_reward = 0;
+    double current_discount = 1.0;
 
     State s0 = init;
     for (unsigned int step = 0; step < steps; ++step) {
@@ -77,7 +79,7 @@ int Environment::evaluate(unsigned int steps, bool verbose) const {
         size_t best_action_index = uniform_choice(best_actions);
         Action best_action = actions[best_action_index];
         State s1 = best_action(s0);
-        int r = reward(s0, best_action, s1);
+        double r = reward(s0, best_action, s1);
         s0 = s1;
 
         if (verbose) {
@@ -86,7 +88,8 @@ int Environment::evaluate(unsigned int steps, bool verbose) const {
             std::cout << "   Obtained reward of " << r << "\n";
         }
 
-        total_reward += r;
+        total_reward += current_discount * r;
+        current_discount *= discount;
     }
 
     return total_reward;

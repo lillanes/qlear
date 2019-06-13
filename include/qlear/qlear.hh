@@ -25,8 +25,9 @@ public:
         : init(init), actions(actions), reward(reward), qtable() {}
 
     void train(unsigned int steps, double learning_rate, double discount,
-            bool verbose);
-    int evaluate(unsigned int steps, bool verbose) const;
+            bool verbose=false);
+    int evaluate(unsigned int steps, double discount=1.0,
+            bool verbose=false) const;
 
 private:
     double estimate_q(State state) const;

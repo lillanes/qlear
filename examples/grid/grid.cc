@@ -113,15 +113,57 @@ Position left(Position const &position) {
     }
 }
 
-int goal_reward(Position const &position, Position const &goal) {
+double goal_reward(Position const &position, Position const &goal) {
     if (position == goal) {
-        return 1;
+        return 1.0;
     }
-    return 0;
+    return 0.0;
+}
+
+int manhattan_distance(Position const &start, Position const &goal) {
+    int dx, dy;
+
+    if (start.x > goal.x) {
+        dx = start.x - goal.x;
+    } else {
+        dx = goal.x - start.x;
+    }
+
+    if (start.y > goal.y) {
+        dy = start.y - goal.y;
+    } else {
+        dy = goal.y - start.y;
+    }
+
+    return dx + dy;
+}
+
+double optimal_agent(Position const &start, Position const &goal,
+        unsigned int steps, bool verbose=false) {
+
+    int d = manhattan_distance(start, goal);
+
+    if (verbose) {
+        std::cout << "From " << start << " to " << goal << " -- "
+            << "manhattan distance: " << d << "\n";
+    }
+
+    double reward;
+    if (d == 0) {
+        reward = double(steps);
+    } else {
+        reward = double(steps) - d + 1.0;
+    }
+
+    if (verbose) {
+        std::cout << " optimal reward is " << reward << "\n";
+    }
+
+    return reward;
 }
 
 std::uniform_int_distribution<> uniform_action(0, 4);
-int random_agent(Position const &start, Position const &goal,
+double random_agent(Position const &start, Position const &goal,
         unsigned int steps, bool verbose=false) {
     Position pos(start);
 
@@ -129,7 +171,7 @@ int random_agent(Position const &start, Position const &goal,
         std::cout << "From " << pos << " to " << goal << " -- ";
     }
 
-    int reward = 0;
+    double reward = 0.0;
     for (unsigned int i = 0 ; i < steps; ++i) {
         switch (uniform_action(rng)) {
         case 0: pos = up(pos); break;
@@ -140,6 +182,7 @@ int random_agent(Position const &start, Position const &goal,
         }
         reward += goal_reward(pos, goal);
     }
+
     if (verbose) {
         std::cout << "reward " << reward << "\n";
     }
@@ -147,7 +190,7 @@ int random_agent(Position const &start, Position const &goal,
     return reward;
 }
 
-int qlear_agent(Position const &start, Position const &goal,
+double qlear_agent(Position const &start, Position const &goal,
         unsigned int steps, bool verbose=false) {
     if (verbose) {
         std::cout << "From " << start << " to " << goal << "\n";
@@ -169,7 +212,7 @@ int qlear_agent(Position const &start, Position const &goal,
 
     env.train(steps, 0.9, 0.9, verbose);
 
-    int eval_reward = env.evaluate(steps, verbose);
+    double eval_reward = env.evaluate(steps, 1.0, verbose);
 
     return eval_reward;
 }
@@ -199,26 +242,38 @@ int main(int const argc, char const **argv) {
     std::uniform_int_distribution<> x(0, WIDTH - 1);
     std::uniform_int_distribution<> y(0, HEIGHT - 1);
 
-    int random_reward = 0;
-    int qlear_reward = 0;
+    double optimal_reward = 0.0;
+    double random_reward = 0.0;
+    double qlear_reward = 0.0;
 
     for (unsigned int i = 0; i < experiments; ++i) {
         Position pos(x(rng), y(rng));
         Position goal(x(rng), y(rng));
 
+        optimal_reward += optimal_agent(pos, goal, steps);
         random_reward += random_agent(pos, goal, steps);
         qlear_reward += qlear_agent(pos, goal, steps);
     }
+
+
+    std::cout << "Optimal agent:\n";
+    std::cout << "  Total reward accrued: " << optimal_reward << "\n";
+    std::cout << "  Average reward per experiment: "
+        << optimal_reward / experiments << "\n";
+    std::cout << "  Average reward per step: "
+        << optimal_reward / (experiments * steps) << "\n";
+
     std::cout << "Random agent:\n";
     std::cout << "  Total reward accrued: " << random_reward << "\n";
     std::cout << "  Average reward per experiment: "
-        << (double) random_reward / experiments << "\n";
+        << random_reward / experiments << "\n";
     std::cout << "  Average reward per step: "
-        << (double) random_reward / (experiments * steps) << "\n";
+        << random_reward / (experiments * steps) << "\n";
+
     std::cout << "Qlear agent:\n";
     std::cout << "  Total reward accrued: " << qlear_reward << "\n";
     std::cout << "  Average reward per experiment: "
-        << (double) qlear_reward / experiments << "\n";
+        << qlear_reward / experiments << "\n";
     std::cout << "  Average reward per step: "
-        << (double) qlear_reward / (experiments * steps) << "\n";
+        << qlear_reward / (experiments * steps) << "\n";
 }

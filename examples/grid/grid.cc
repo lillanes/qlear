@@ -207,7 +207,7 @@ int main(int const argc, char const **argv) {
         Position goal(x(rng), y(rng));
 
         random_reward += random_agent(pos, goal, steps);
-        qlear_reward += qlear_agent(pos, goal, steps, true);
+        qlear_reward += qlear_agent(pos, goal, steps);
     }
     std::cout << "Random agent:\n";
     std::cout << "  Total reward accrued: " << random_reward << "\n";

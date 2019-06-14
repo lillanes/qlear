@@ -4,17 +4,27 @@
 
 namespace qlear {
 
-namespace {
+class Rng {
+    std::mt19937 engine;
+public:
+    Rng();
 
-std::random_device rd;
-std::mt19937 rng(rd());
+    template <typename S>
+    Rng(S seed)
+        : engine(seed) {}
 
-} // namespace
+    template <typename T>
+    T uniform_choice(std::vector<T> const &v) {
+        std::uniform_int_distribution<> dist(0, v.size() - 1);
+        return v[dist(engine)];
+    }
 
-template<typename T>
-T uniform_choice(std::vector<T> const &v) {
-    std::uniform_int_distribution<> dist(0, v.size() - 1);
-    return v[dist(rng)];
-}
+    double canonical();
+
+    size_t index(size_t length);
+
+};
+
+extern Rng rng;
 
 } // namespace qlear

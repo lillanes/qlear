@@ -1,5 +1,6 @@
 set(sources
   "${CMAKE_CURRENT_SOURCE_DIR}/qlear.cc"
+  "${CMAKE_CURRENT_SOURCE_DIR}/utils.cc"
   )
 
 add_library(qlear ${sources})

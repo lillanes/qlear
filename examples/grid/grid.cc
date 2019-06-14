@@ -208,11 +208,11 @@ double qlear_agent(Position const &start, Position const &goal,
         return goal_reward(Position(s1), goal);
     };
 
-    qlear::Environment env(start.id(), actions, reward);
+    qlear::Environment env{start.id(), actions, reward};
+    qlear::Agent agent(env, 0.9, 0.9, 0.01);
 
-    env.train(steps, 0.9, 0.9, verbose);
-
-    double eval_reward = env.evaluate(steps, 1.0, verbose);
+    agent.train(steps);
+    double eval_reward = agent.evaluate(steps);
 
     return eval_reward;
 }

@@ -2,9 +2,9 @@
 
 #include <algorithm>
 #include <functional>
+#include <iterator>
 #include <limits>
-
-#include <qlear/qlear.hh>
+#include <random>
 
 namespace qlear {
 

@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <random>
+#include <vector>
 
 #include <qlear/qlear.hh>
 

@@ -25,9 +25,4 @@ double Rng::canonical() {
                                    std::numeric_limits<double>::digits>(engine);
 }
 
-size_t Rng::index(size_t length) {
-    std::uniform_int_distribution<> dist(0, length - 1);
-    return dist(engine);
-}
-
 } //namespace qlear

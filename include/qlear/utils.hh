@@ -13,15 +13,18 @@ public:
     Rng(S seed)
         : engine(seed) {}
 
-    template <typename T>
-    T uniform_choice(std::vector<T> const &v) {
-        std::uniform_int_distribution<> dist(0, v.size() - 1);
-        return v[dist(engine)];
+    template <typename C, typename S = typename C::size_type>
+    S uniform_index(C const &c) {
+        std::uniform_int_distribution<> dist(0, c.size() - 1);
+        return dist(engine);
+    }
+
+    template <typename C, typename E = typename C::value_type>
+    E uniform_choice(C const &c) {
+        return c[uniform_index(c)];
     }
 
     double canonical();
-
-    size_t index(size_t length);
 
 };
 

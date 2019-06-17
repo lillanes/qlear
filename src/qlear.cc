@@ -30,7 +30,7 @@ double Agent::train(unsigned int steps) {
         size_t selected_action_index;
 
         if (test_epsilon(epsilon)) {
-            selected_action_index = rng.index(env.actions.size());
+            selected_action_index = rng.uniform_index(env.actions);
         } else {
             double max_q = qtable[{s0, 0}];
             std::vector<size_t> best_actions = {0};

@@ -264,14 +264,16 @@ int main(int const argc, char const **argv) {
         << optimal_reward / (experiments * steps) << "\n";
 
     std::cout << "Random agent:\n";
-    std::cout << "  Total reward accrued: " << random_reward << "\n";
+    std::cout << "  Total reward accrued: " << random_reward << " ("
+        << 100 * random_reward / optimal_reward << "%)\n";
     std::cout << "  Average reward per experiment: "
         << random_reward / experiments << "\n";
     std::cout << "  Average reward per step: "
         << random_reward / (experiments * steps) << "\n";
 
     std::cout << "Qlear agent:\n";
-    std::cout << "  Total reward accrued: " << qlear_reward << "\n";
+    std::cout << "  Total reward accrued: " << qlear_reward << " ("
+        << 100 * qlear_reward / optimal_reward << "%)\n";
     std::cout << "  Average reward per experiment: "
         << qlear_reward / experiments << "\n";
     std::cout << "  Average reward per step: "

@@ -6,12 +6,12 @@ namespace qlear {
 
 class Rng {
     std::mt19937 engine;
+
 public:
     Rng();
 
     template <typename S>
-    Rng(S seed)
-        : engine(seed) {}
+    Rng(S seed) : engine(seed) {}
 
     template <typename C, typename S = typename C::size_type>
     S uniform_index(C const &c) {
@@ -25,7 +25,6 @@ public:
     }
 
     double canonical();
-
 };
 
 extern Rng rng;

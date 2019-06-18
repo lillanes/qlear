@@ -1,9 +1,8 @@
 #include <qlear/qlear.hh>
+#include <qlear/utils.hh>
 
 #include <cstddef>
 #include <iostream>
-
-#include <qlear/utils.hh>
 
 namespace qlear {
 
@@ -24,8 +23,6 @@ double Agent::train(unsigned int steps) {
     State s0 = env.init;
 
     for (unsigned int step = 0; step < steps; ++step) {
-
-
         double r = 0.0;
         std::size_t selected_action_index;
 
@@ -58,13 +55,15 @@ double Agent::train(unsigned int steps) {
 #endif
 
         double q = qtable[{s0, selected_action_index}];
-        qtable[{s0, selected_action_index}] = (1.0 - learning.value) * q
-            + learning.value * (r + discount.value * estimate_q(s1));
+        qtable[{s0, selected_action_index}] =
+                (1.0 - learning.value) * q
+                + learning.value * (r + discount.value * estimate_q(s1));
 
 #ifdef VERBOSE
         std::cout << "   New q-value for (" << s0 << ", "
-            << selected_action_index << "): "
-            << qtable[{s0, selected_action_index}] << " (was " << q << ")\n";
+                  << selected_action_index
+                  << "): " << qtable[{s0, selected_action_index}] << " (was "
+                  << q << ")\n";
 #endif
 
         s0 = s1;

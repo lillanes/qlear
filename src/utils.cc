@@ -21,8 +21,8 @@ Rng::Rng() {
 }
 
 double Rng::canonical() {
-    return std::generate_canonical<double,
-                                   std::numeric_limits<double>::digits>(engine);
+    return std::generate_canonical<double, std::numeric_limits<double>::digits>(
+            engine);
 }
 
-} //namespace qlear
+} // namespace qlear

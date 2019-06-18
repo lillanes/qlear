@@ -1,9 +1,9 @@
+#include <qlear/qlear.hh>
+
 #include <cstdlib>
 #include <iostream>
 #include <random>
 #include <vector>
-
-#include <qlear/qlear.hh>
 
 #define WIDTH 32
 #define HEIGHT 32
@@ -12,37 +12,33 @@
 std::random_device rd;
 std::mt19937 rng(rd());
 std::uniform_real_distribution<> dist(0.0, 1.0);
-std::uniform_int_distribution<> choose(0,2);
+std::uniform_int_distribution<> choose(0, 2);
 
 struct Position {
     unsigned int x, y;
 
     Position() = default;
-    Position(unsigned int x, unsigned int y)
-        : x(x), y(y) {}
+    Position(unsigned int x, unsigned int y) : x(x), y(y) {}
     ~Position() = default;
 
     // Default move constructor and assignment
     Position(Position &&) = default;
-    Position & operator=(Position &&) = default;
+    Position &operator=(Position &&) = default;
 
     // Default copy constructor and assignment
     Position(Position const &) = default;
-    Position & operator=(Position const &) = default;
+    Position &operator=(Position const &) = default;
 
-    Position(qlear::State const &id)
-        : x(id % WIDTH), y(id / WIDTH) {}
+    Position(qlear::State const &id) : x(id % WIDTH), y(id / WIDTH) {}
 
-    qlear::State id() const {
-        return WIDTH * y + x;
-    }
+    qlear::State id() const { return WIDTH * y + x; }
 
     bool operator==(Position const &other) const {
         return x == other.x && y == other.y;
     }
 
-    friend std::ostream& operator<<(std::ostream &stream,
-            Position const &position) {
+    friend std::ostream &operator<<(std::ostream &stream,
+                                    Position const &position) {
         stream << '(' << position.x << ", " << position.y << ')';
         return stream;
     }
@@ -140,13 +136,12 @@ int manhattan_distance(Position const &start, Position const &goal) {
 }
 
 double optimal_agent(Position const &start, Position const &goal,
-        unsigned int steps, bool verbose=false) {
-
+                     unsigned int steps, bool verbose = false) {
     int d = manhattan_distance(start, goal);
 
     if (verbose) {
         std::cout << "From " << start << " to " << goal << " -- "
-            << "manhattan distance: " << d << "\n";
+                  << "manhattan distance: " << d << "\n";
     }
 
     double reward;
@@ -165,7 +160,7 @@ double optimal_agent(Position const &start, Position const &goal,
 
 std::uniform_int_distribution<> uniform_action(0, 4);
 double random_agent(Position const &start, Position const &goal,
-        unsigned int steps, bool verbose=false) {
+                    unsigned int steps, bool verbose = false) {
     Position pos(start);
 
     if (verbose) {
@@ -173,7 +168,7 @@ double random_agent(Position const &start, Position const &goal,
     }
 
     double reward = 0.0;
-    for (unsigned int i = 0 ; i < steps; ++i) {
+    for (unsigned int i = 0; i < steps; ++i) {
         switch (uniform_action(rng)) {
         case 0: pos = up(pos); break;
         case 1: pos = right(pos); break;
@@ -192,16 +187,16 @@ double random_agent(Position const &start, Position const &goal,
 }
 
 double qlear_agent(Position const &start, Position const &goal,
-        unsigned int steps, bool verbose=false) {
+                   unsigned int steps, bool verbose = false) {
     if (verbose) {
         std::cout << "From " << start << " to " << goal << "\n";
     }
 
-    auto a_up = [&](qlear::State s){ return up(Position(s)).id(); };
-    auto a_right = [&](qlear::State s){ return right(Position(s)).id(); };
-    auto a_down = [&](qlear::State s){ return down(Position(s)).id(); };
-    auto a_left = [&](qlear::State s){ return left(Position(s)).id(); };
-    auto a_noop = [](qlear::State s){ return s; };
+    auto a_up = [&](qlear::State s) { return up(Position(s)).id(); };
+    auto a_right = [&](qlear::State s) { return right(Position(s)).id(); };
+    auto a_down = [&](qlear::State s) { return down(Position(s)).id(); };
+    auto a_left = [&](qlear::State s) { return left(Position(s)).id(); };
+    auto a_noop = [](qlear::State s) { return s; };
 
     std::vector<qlear::Action> actions({a_up, a_right, a_down, a_left, a_noop});
 
@@ -238,7 +233,7 @@ int main(int const argc, char const **argv) {
         rng.seed(seed);
     }
     std::cout << "Will run " << experiments << " independent experiments, with "
-        << steps << " training steps each.\n";
+              << steps << " training steps each.\n";
 
     std::uniform_int_distribution<> x(0, WIDTH - 1);
     std::uniform_int_distribution<> y(0, HEIGHT - 1);
@@ -256,27 +251,30 @@ int main(int const argc, char const **argv) {
         qlear_reward += qlear_agent(pos, goal, steps);
     }
 
-
     std::cout << "Optimal agent:\n";
     std::cout << "  Total reward accrued: " << optimal_reward << "\n";
     std::cout << "  Average reward per experiment: "
-        << optimal_reward / experiments << "\n";
+              << optimal_reward / experiments << "\n";
     std::cout << "  Average reward per step: "
-        << optimal_reward / (experiments * steps) << "\n";
+              << optimal_reward / (experiments * steps) << "\n";
 
     std::cout << "Random agent:\n";
     std::cout << "  Total reward accrued: " << random_reward << " ("
-        << 100 * random_reward / optimal_reward << "%)\n";
+              << 100 * random_reward / optimal_reward << "%)\n";
     std::cout << "  Average reward per experiment: "
-        << random_reward / experiments << "\n";
+              << random_reward / experiments << "\n";
     std::cout << "  Average reward per step: "
-        << random_reward / (experiments * steps) << "\n";
+              << random_reward / (experiments * steps) << "\n";
 
     std::cout << "Qlear agent:\n";
     std::cout << "  Total reward accrued: " << qlear_reward << " ("
-        << 100 * qlear_reward / optimal_reward << "%)\n";
+              << 100 * qlear_reward / optimal_reward << "%)\n";
     std::cout << "  Average reward per experiment: "
-        << qlear_reward / experiments << "\n";
+              << qlear_reward / experiments << "\n";
     std::cout << "  Average reward per step: "
-        << qlear_reward / (experiments * steps) << "\n";
+              << qlear_reward / (experiments * steps) << "\n";
+
+    std::cout << "A very long sentence that goes way past the end of the "
+                 "paragraph by a bit"
+              << '\n';
 }

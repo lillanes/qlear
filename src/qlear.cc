@@ -16,7 +16,7 @@ bool test_epsilon(Rate const &epsilon) {
 double Agent::train(unsigned int steps) {
 #ifdef VERBOSE
     std::cout << "Begin training!\n";
-    std::cout << "  Starting at state " << init << ".\n";
+    std::cout << "  Starting at state " << env.init << ".\n";
 #endif
 
     double total_reward = 0.0;
@@ -75,7 +75,7 @@ double Agent::train(unsigned int steps) {
 double Agent::evaluate(unsigned int steps, bool discounted) const {
 #ifdef VERBOSE
     std::cout << "Begin evaluation!\n";
-    std::cout << "  Starting at state " << init << ".\n";
+    std::cout << "  Starting at state " << env.init << ".\n";
 #endif
 
     double total_reward = 0.0;

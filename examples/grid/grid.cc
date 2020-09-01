@@ -273,8 +273,4 @@ int main(int const argc, char const **argv) {
               << qlear_reward / experiments << "\n";
     std::cout << "  Average reward per step: "
               << qlear_reward / (experiments * steps) << "\n";
-
-    std::cout << "A very long sentence that goes way past the end of the "
-                 "paragraph by a bit"
-              << '\n';
 }
